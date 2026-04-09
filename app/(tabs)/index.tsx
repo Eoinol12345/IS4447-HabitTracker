@@ -22,7 +22,13 @@ export default function HabitsScreen() {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const today = new Date().toISOString().split('T')[0];
 
-  useFocusEffect(useCallback(() => { loadData(); }, []));
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  useFocusEffect(useCallback(() => {
+    loadData();
+  }, []));
 
   async function loadData() {
     if (!user) return;
@@ -46,7 +52,7 @@ export default function HabitsScreen() {
     } else {
       await db.insert(habitLogs).values({ habitId: habit.id, date: today, count: 1, notes: '' });
     }
-    loadData();
+    await loadData();
   }
 
   async function saveHabit() {
@@ -68,7 +74,7 @@ export default function HabitsScreen() {
     setName('');
     setSelectedCategory(null);
     setEditingHabit(null);
-    loadData();
+    await loadData();
   }
 
   async function deleteHabit(id: number) {
@@ -77,7 +83,7 @@ export default function HabitsScreen() {
       { text: 'Delete', style: 'destructive', onPress: async () => {
         await db.delete(habits).where(eq(habits.id, id));
         await db.delete(habitLogs).where(eq(habitLogs.habitId, id));
-        loadData();
+        await loadData();
       }},
     ]);
   }
@@ -112,7 +118,10 @@ export default function HabitsScreen() {
           renderItem={({ item }) => (
             <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
               <TouchableOpacity
-                style={[styles.checkbox, { borderColor: colors.primary, backgroundColor: item.completedToday ? colors.primary : 'transparent' }]}
+                style={[styles.checkbox, {
+                  borderColor: colors.primary,
+                  backgroundColor: item.completedToday ? colors.primary : 'transparent'
+                }]}
                 onPress={() => toggleComplete(item)}
                 accessibilityLabel={`Toggle ${item.name}`}
               >
@@ -146,7 +155,12 @@ export default function HabitsScreen() {
 
       <TouchableOpacity
         style={[styles.fab, { backgroundColor: colors.primary }]}
-        onPress={() => { setEditingHabit(null); setName(''); setSelectedCategory(null); setModalVisible(true); }}
+        onPress={() => {
+          setEditingHabit(null);
+          setName('');
+          setSelectedCategory(null);
+          setModalVisible(true);
+        }}
         accessibilityLabel="Add habit"
       >
         <Text style={styles.fabText}>+</Text>

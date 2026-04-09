@@ -11,6 +11,7 @@ type User = {
 
 type AuthContextType = {
   user: User | null;
+  loading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   register: (email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
@@ -21,6 +22,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadUser();
@@ -29,37 +31,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   async function loadUser() {
     try {
       const stored = await AsyncStorage.getItem('user');
-      if (stored) setUser(JSON.parse(stored));
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        console.log('Loaded user from storage:', parsed);
+        setUser(parsed);
+      }
     } catch (e) {
-      console.error(e);
+      console.error('Load user error:', e);
+    } finally {
+      setLoading(false);
     }
   }
 
   async function login(email: string, password: string): Promise<boolean> {
     try {
-      const result = await db.select().from(users)
-        .where(eq(users.email, email));
+      console.log('Attempting login with:', email, password);
+      const result = await db.select().from(users).where(eq(users.email, email));
+      console.log('DB result:', JSON.stringify(result));
       if (result.length > 0 && result[0].password === password) {
         const u = { id: result[0].id, email: result[0].email };
         setUser(u);
         await AsyncStorage.setItem('user', JSON.stringify(u));
+        console.log('Login successful, user set:', u);
         return true;
       }
+      console.log('Login failed - no match');
       return false;
     } catch (e) {
-      console.error(e);
+      console.error('Login error:', e);
       return false;
     }
   }
 
   async function register(email: string, password: string): Promise<boolean> {
     try {
-      const existing = await db.select().from(users)
-        .where(eq(users.email, email));
+      const existing = await db.select().from(users).where(eq(users.email, email));
       if (existing.length > 0) return false;
       await db.insert(users).values({ email, password });
-      const result = await db.select().from(users)
-        .where(eq(users.email, email));
+      const result = await db.select().from(users).where(eq(users.email, email));
       const u = { id: result[0].id, email: result[0].email };
       setUser(u);
       await AsyncStorage.setItem('user', JSON.stringify(u));
@@ -71,6 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   async function logout() {
+    console.log('Logging out');
     setUser(null);
     await AsyncStorage.removeItem('user');
   }
@@ -82,7 +92,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, deleteAccount }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, deleteAccount }}>
       {children}
     </AuthContext.Provider>
   );

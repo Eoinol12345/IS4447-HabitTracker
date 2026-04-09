@@ -2,12 +2,18 @@ import React from 'react';
 import {
   View, Text, TouchableOpacity, StyleSheet, Alert, Switch
 } from 'react-native';
+import { router } from 'expo-router';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 
 export default function SettingsScreen() {
   const { user, logout, deleteAccount } = useAuth();
   const { colors, theme, toggleTheme } = useTheme();
+
+  async function handleLogout() {
+    await logout();
+    router.replace('/login');
+  }
 
   function handleDeleteAccount() {
     Alert.alert(
@@ -20,6 +26,7 @@ export default function SettingsScreen() {
           style: 'destructive',
           onPress: async () => {
             await deleteAccount();
+            router.replace('/login');
           },
         },
       ]
@@ -55,7 +62,7 @@ export default function SettingsScreen() {
         <Text style={[styles.cardTitle, { color: colors.subtext }]}>ACTIONS</Text>
         <TouchableOpacity
           style={[styles.button, { backgroundColor: colors.primary }]}
-          onPress={logout}
+          onPress={handleLogout}
           accessibilityLabel="Logout button"
         >
           <Text style={styles.buttonText}>🚪 Logout</Text>

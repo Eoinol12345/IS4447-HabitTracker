@@ -3,10 +3,11 @@ import {
   View, Text, TextInput, TouchableOpacity,
   StyleSheet, Alert, KeyboardAvoidingView, Platform
 } from 'react-native';
+import { router } from 'expo-router';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 
-export default function RegisterScreen({ navigation }: any) {
+export default function RegisterScreen() {
   const { register } = useAuth();
   const { colors } = useTheme();
   const [email, setEmail] = useState('');
@@ -24,9 +25,13 @@ export default function RegisterScreen({ navigation }: any) {
       return;
     }
     setLoading(true);
-    const success = await register(email, password);
+    const success = await register(email.trim().toLowerCase(), password.trim());
     setLoading(false);
-    if (!success) Alert.alert('Error', 'Email already in use');
+    if (success) {
+      router.replace('/(tabs)');
+    } else {
+      Alert.alert('Error', 'Email already in use');
+    }
   }
 
   return (
@@ -76,7 +81,7 @@ export default function RegisterScreen({ navigation }: any) {
           <Text style={styles.buttonText}>{loading ? 'Creating...' : 'Register'}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+        <TouchableOpacity onPress={() => router.push('/login')}>
           <Text style={[styles.link, { color: colors.primary }]}>
             Already have an account? Login
           </Text>

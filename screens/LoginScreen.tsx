@@ -3,9 +3,9 @@ import {
   View, Text, TextInput, TouchableOpacity,
   StyleSheet, Alert, KeyboardAvoidingView, Platform
 } from 'react-native';
+import { router } from 'expo-router';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { seedDatabase } from '../db/seed';
 
 export default function LoginScreen({ navigation }: any) {
   const { login } = useAuth();
@@ -20,9 +20,24 @@ export default function LoginScreen({ navigation }: any) {
       return;
     }
     setLoading(true);
-    const success = await login(email, password);
+    const success = await login(email.trim().toLowerCase(), password.trim());
     setLoading(false);
-    if (!success) Alert.alert('Error', 'Invalid email or password');
+    if (success) {
+      router.replace('/(tabs)');
+    } else {
+      Alert.alert('Error', 'Invalid email or password.');
+    }
+  }
+
+  async function handleSeed() {
+    try {
+      const { seedDatabase } = await import('../db/seed');
+      await seedDatabase();
+      Alert.alert('Done', 'Demo data loaded! Login with demo@habits.com / demo1234');
+    } catch (e) {
+      console.error(e);
+      Alert.alert('Error', 'Failed to seed: ' + String(e));
+    }
   }
 
   return (
@@ -63,16 +78,13 @@ export default function LoginScreen({ navigation }: any) {
           <Text style={styles.buttonText}>{loading ? 'Logging in...' : 'Login'}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+        <TouchableOpacity onPress={() => router.push('/register')}>
           <Text style={[styles.link, { color: colors.primary }]}>
             Don't have an account? Register
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={async () => {
-          await seedDatabase();
-          Alert.alert('Done', 'Demo data loaded! Login with demo@habits.com / demo1234');
-        }}>
+        <TouchableOpacity onPress={handleSeed}>
           <Text style={[styles.link, { color: colors.subtext }]}>Load demo data</Text>
         </TouchableOpacity>
       </View>
