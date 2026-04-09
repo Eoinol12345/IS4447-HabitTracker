@@ -30,13 +30,11 @@ export default function SettingsScreen() {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Text style={[styles.header, { color: colors.text }]}>⚙️ Settings</Text>
 
-      {/* Profile card */}
       <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <Text style={[styles.cardTitle, { color: colors.subtext }]}>ACCOUNT</Text>
         <Text style={[styles.email, { color: colors.text }]}>📧 {user?.email}</Text>
       </View>
 
-      {/* Appearance */}
       <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <Text style={[styles.cardTitle, { color: colors.subtext }]}>APPEARANCE</Text>
         <View style={styles.row}>
@@ -53,10 +51,8 @@ export default function SettingsScreen() {
         </View>
       </View>
 
-      {/* Actions */}
       <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <Text style={[styles.cardTitle, { color: colors.subtext }]}>ACTIONS</Text>
-
         <TouchableOpacity
           style={[styles.button, { backgroundColor: colors.primary }]}
           onPress={logout}
@@ -64,7 +60,6 @@ export default function SettingsScreen() {
         >
           <Text style={styles.buttonText}>🚪 Logout</Text>
         </TouchableOpacity>
-
         <TouchableOpacity
           style={[styles.button, { backgroundColor: colors.danger }]}
           onPress={handleDeleteAccount}
@@ -74,7 +69,6 @@ export default function SettingsScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* App info */}
       <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <Text style={[styles.cardTitle, { color: colors.subtext }]}>ABOUT</Text>
         <Text style={[styles.info, { color: colors.subtext }]}>🌱 HabitTracker v1.0</Text>
@@ -88,25 +82,12 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, paddingTop: 60 },
   header: { fontSize: 28, fontWeight: 'bold', marginBottom: 16 },
-  card: {
-    borderRadius: 12, borderWidth: 1,
-    padding: 16, marginBottom: 16,
-  },
-  cardTitle: {
-    fontSize: 11, fontWeight: '700',
-    letterSpacing: 1, marginBottom: 12,
-  },
+  card: { borderRadius: 12, borderWidth: 1, padding: 16, marginBottom: 16 },
+  cardTitle: { fontSize: 11, fontWeight: '700', letterSpacing: 1, marginBottom: 12 },
   email: { fontSize: 16 },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
+  row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   rowLabel: { fontSize: 16 },
-  button: {
-    padding: 14, borderRadius: 12,
-    alignItems: 'center', marginBottom: 10,
-  },
+  button: { padding: 14, borderRadius: 12, alignItems: 'center', marginBottom: 10 },
   buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
   info: { fontSize: 14, marginBottom: 4 },
 });

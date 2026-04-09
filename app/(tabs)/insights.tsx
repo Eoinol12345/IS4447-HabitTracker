@@ -35,7 +35,6 @@ export default function InsightsScreen() {
     const filtered = allLogs.filter(l => new Date(l.date) >= cutoff && l.count > 0);
     setTotalLogs(filtered.length);
 
-    // Bar chart — completions per day
     const dayMap: Record<string, number> = {};
     for (let i = days - 1; i >= 0; i--) {
       const d = new Date(now);
@@ -54,7 +53,6 @@ export default function InsightsScreen() {
     }));
     setBarData(bar);
 
-    // Pie chart — completions per category
     const catMap: Record<number, { count: number; name: string; colour: string }> = {};
     allCategories.forEach(c => {
       catMap[c.id] = { count: 0, name: c.name, colour: c.colour };
@@ -70,7 +68,6 @@ export default function InsightsScreen() {
       .map(c => ({ value: c.count, color: c.colour, text: c.name }));
     setPieData(pie);
 
-    // Most consistent habit
     const habitCounts: Record<number, number> = {};
     filtered.forEach(l => {
       habitCounts[l.habitId] = (habitCounts[l.habitId] || 0) + 1;
@@ -84,7 +81,6 @@ export default function InsightsScreen() {
     <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
       <Text style={[styles.header, { color: colors.text }]}>📊 Insights</Text>
 
-      {/* Period toggle */}
       <View style={styles.toggleRow}>
         {(['daily', 'weekly', 'monthly'] as const).map(p => (
           <TouchableOpacity
@@ -102,7 +98,6 @@ export default function InsightsScreen() {
         ))}
       </View>
 
-      {/* Summary card */}
       <View style={[styles.summaryCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <View style={styles.summaryItem}>
           <Text style={[styles.summaryValue, { color: colors.primary }]}>{totalLogs}</Text>
@@ -114,7 +109,6 @@ export default function InsightsScreen() {
         </View>
       </View>
 
-      {/* Bar chart */}
       <View style={[styles.chartCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <Text style={[styles.chartTitle, { color: colors.text }]}>Completions Over Time</Text>
         {barData.length > 0 ? (
@@ -135,7 +129,6 @@ export default function InsightsScreen() {
         )}
       </View>
 
-      {/* Pie chart */}
       <View style={[styles.chartCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <Text style={[styles.chartTitle, { color: colors.text }]}>By Category</Text>
         {pieData.length > 0 ? (
@@ -179,13 +172,4 @@ const styles = StyleSheet.create({
   summaryItem: { flex: 1, alignItems: 'center' },
   summaryValue: { fontSize: 28, fontWeight: 'bold' },
   summaryLabel: { fontSize: 13, marginTop: 4 },
-  chartCard: { padding: 16, borderRadius: 12, borderWidth: 1, marginBottom: 16 },
-  chartTitle: { fontSize: 16, fontWeight: '600', marginBottom: 12 },
-  noData: { textAlign: 'center', padding: 24 },
-  pieContainer: { alignItems: 'center' },
-  pieCenter: { textAlign: 'center', fontSize: 14, fontWeight: 'bold' },
-  legend: { marginTop: 16, width: '100%' },
-  legendItem: { flexDirection: 'row', alignItems: 'center', marginBottom: 6 },
-  legendDot: { width: 12, height: 12, borderRadius: 6, marginRight: 8 },
-  legendText: { fontSize: 14 },
-});
+  chartCard: { padding: 16, borderRadius: 12, borderWidth: 1,

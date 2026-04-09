@@ -32,7 +32,6 @@ export default function TargetsScreen() {
     const enriched = t.map(target => {
       const habit = h.find(h => h.id === target.habitId);
       let progress = 0;
-
       if (target.period === 'weekly') {
         const weekAgo = new Date(now);
         weekAgo.setDate(now.getDate() - 7);
@@ -50,7 +49,6 @@ export default function TargetsScreen() {
           l.count > 0
         ).length;
       }
-
       return { ...target, habit, progress };
     });
 
@@ -234,16 +232,3 @@ const styles = StyleSheet.create({
   emptyText: { fontSize: 16, textAlign: 'center' },
   card: { padding: 16, borderRadius: 12, borderWidth: 1, marginBottom: 12 },
   cardHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 },
-  habitName: { fontSize: 16, fontWeight: '600' },
-  action: { fontSize: 14, fontWeight: '600' },
-  period: { fontSize: 13, marginBottom: 8 },
-  progressBar: { height: 10, borderRadius: 5, overflow: 'hidden', marginBottom: 6 },
-  progressFill: { height: '100%', borderRadius: 5 },
-  progressRow: { flexDirection: 'row', justifyContent: 'space-between' },
-  progressText: { fontSize: 13, fontWeight: '600' },
-  badge: { fontSize: 13, fontWeight: '600' },
-  fab: { position: 'absolute', bottom: 24, right: 24, width: 56, height: 56, borderRadius: 28, justifyContent: 'center', alignItems: 'center', elevation: 4 },
-  fabText: { color: '#fff', fontSize: 28, fontWeight: 'bold' },
-  modalOverlay: { flex: 1, backgroundColor: '#00000066', justifyContent: 'flex-end' },
-  modal: { borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24 },
-  modalTitle: { fontSize: 20, fontWeight: 'bold', marginBotto
