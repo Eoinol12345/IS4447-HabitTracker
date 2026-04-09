@@ -78,10 +78,14 @@ export default function TargetsScreen() {
   async function deleteTarget(id: number) {
     Alert.alert('Delete', 'Delete this target?', [
       { text: 'Cancel' },
-      { text: 'Delete', style: 'destructive', onPress: async () => {
-        await db.delete(targets).where(eq(targets.id, id));
-        loadData();
-      }},
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          await db.delete(targets).where(eq(targets.id, id));
+          loadData();
+        }
+      },
     ]);
   }
 
@@ -232,3 +236,22 @@ const styles = StyleSheet.create({
   emptyText: { fontSize: 16, textAlign: 'center' },
   card: { padding: 16, borderRadius: 12, borderWidth: 1, marginBottom: 12 },
   cardHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 },
+  habitName: { fontSize: 16, fontWeight: '600' },
+  action: { fontSize: 14, fontWeight: '600' },
+  period: { fontSize: 13, marginBottom: 8 },
+  progressBar: { height: 10, borderRadius: 5, overflow: 'hidden', marginBottom: 6 },
+  progressFill: { height: '100%', borderRadius: 5 },
+  progressRow: { flexDirection: 'row', justifyContent: 'space-between' },
+  progressText: { fontSize: 13, fontWeight: '600' },
+  badge: { fontSize: 13, fontWeight: '600' },
+  fab: { position: 'absolute', bottom: 24, right: 24, width: 56, height: 56, borderRadius: 28, justifyContent: 'center', alignItems: 'center', elevation: 4 },
+  fabText: { color: '#fff', fontSize: 28, fontWeight: 'bold' },
+  modalOverlay: { flex: 1, backgroundColor: '#00000066', justifyContent: 'flex-end' },
+  modal: { borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24 },
+  modalTitle: { fontSize: 20, fontWeight: 'bold', marginBottom: 16 },
+  label: { fontSize: 14, marginBottom: 8 },
+  chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 16 },
+  chip: { borderRadius: 20, paddingHorizontal: 14, paddingVertical: 8 },
+  modalButtons: { flexDirection: 'row', gap: 12, marginTop: 8 },
+  modalBtn: { flex: 1, padding: 14, borderRadius: 12, alignItems: 'center' },
+});

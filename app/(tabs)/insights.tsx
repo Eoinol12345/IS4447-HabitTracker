@@ -28,7 +28,7 @@ export default function InsightsScreen() {
     const allLogs = await db.select().from(habitLogs);
 
     const now = new Date();
-    let days = period === 'daily' ? 1 : period === 'weekly' ? 7 : 30;
+    const days = period === 'daily' ? 1 : period === 'weekly' ? 7 : 30;
     const cutoff = new Date(now);
     cutoff.setDate(now.getDate() - days);
 
@@ -172,4 +172,13 @@ const styles = StyleSheet.create({
   summaryItem: { flex: 1, alignItems: 'center' },
   summaryValue: { fontSize: 28, fontWeight: 'bold' },
   summaryLabel: { fontSize: 13, marginTop: 4 },
-  chartCard: { padding: 16, borderRadius: 12, borderWidth: 1,
+  chartCard: { padding: 16, borderRadius: 12, borderWidth: 1, marginBottom: 16 },
+  chartTitle: { fontSize: 16, fontWeight: '600', marginBottom: 12 },
+  noData: { textAlign: 'center', padding: 24 },
+  pieContainer: { alignItems: 'center' },
+  pieCenter: { textAlign: 'center', fontSize: 14, fontWeight: 'bold' },
+  legend: { marginTop: 16, width: '100%' },
+  legendItem: { flexDirection: 'row', alignItems: 'center', marginBottom: 6 },
+  legendDot: { width: 12, height: 12, borderRadius: 6, marginRight: 8 },
+  legendText: { fontSize: 14 },
+});
