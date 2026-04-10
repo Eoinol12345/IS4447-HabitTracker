@@ -10,6 +10,23 @@ import { eq, and } from 'drizzle-orm';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 
+function calculateStreak(logs: any[], habitId: number): number {
+  const today = new Date();
+  let streak = 0;
+  for (let i = 0; i < 365; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const dateStr = d.toISOString().split('T')[0];
+    const log = logs.find(l => l.habitId === habitId && l.date === dateStr && l.count > 0);
+    if (log) {
+      streak++;
+    } else {
+      break;
+    }
+  }
+  return streak;
+}
+
 export default function HabitsScreen() {
   const { user } = useAuth();
   const { colors } = useTheme();
@@ -22,13 +39,8 @@ export default function HabitsScreen() {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const today = new Date().toISOString().split('T')[0];
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  useFocusEffect(useCallback(() => {
-    loadData();
-  }, []));
+  useEffect(() => { loadData(); }, []);
+  useFocusEffect(useCallback(() => { loadData(); }, []));
 
   async function loadData() {
     if (!user) return;
@@ -38,7 +50,8 @@ export default function HabitsScreen() {
     const enriched = h.map(habit => {
       const cat = c.find(c => c.id === habit.categoryId);
       const todayLog = logs.find(l => l.habitId === habit.id && l.date === today);
-      return { ...habit, category: cat, completedToday: !!todayLog };
+      const streak = calculateStreak(logs, habit.id);
+      return { ...habit, category: cat, completedToday: !!todayLog, streak };
     });
     setHabitList(enriched);
     setCategoryList(c);
@@ -129,13 +142,22 @@ export default function HabitsScreen() {
               </TouchableOpacity>
               <View style={styles.cardContent}>
                 <Text style={[styles.habitName, { color: colors.text }]}>{item.name}</Text>
-                {item.category && (
-                  <View style={[styles.badge, { backgroundColor: item.category.colour + '33' }]}>
-                    <Text style={[styles.badgeText, { color: item.category.colour }]}>
-                      {item.category.name}
-                    </Text>
-                  </View>
-                )}
+                <View style={styles.metaRow}>
+                  {item.category && (
+                    <View style={[styles.badge, { backgroundColor: item.category.colour + '33' }]}>
+                      <Text style={[styles.badgeText, { color: item.category.colour }]}>
+                        {item.category.name}
+                      </Text>
+                    </View>
+                  )}
+                  {item.streak > 0 && (
+                    <View style={[styles.streakBadge, { backgroundColor: '#FF980033' }]}>
+                      <Text style={[styles.badgeText, { color: '#FF9800' }]}>
+                        🔥 {item.streak} day{item.streak !== 1 ? 's' : ''}
+                      </Text>
+                    </View>
+                  )}
+                </View>
               </View>
               <TouchableOpacity onPress={() => {
                 setEditingHabit(item);
@@ -229,7 +251,9 @@ const styles = StyleSheet.create({
   checkmark: { color: '#fff', fontWeight: 'bold' },
   cardContent: { flex: 1 },
   habitName: { fontSize: 16, fontWeight: '500' },
-  badge: { alignSelf: 'flex-start', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 2, marginTop: 4 },
+  metaRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 4 },
+  badge: { alignSelf: 'flex-start', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 2 },
+  streakBadge: { alignSelf: 'flex-start', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 2 },
   badgeText: { fontSize: 12, fontWeight: '600' },
   action: { fontSize: 14, fontWeight: '600', marginLeft: 12 },
   fab: { position: 'absolute', bottom: 24, right: 24, width: 56, height: 56, borderRadius: 28, justifyContent: 'center', alignItems: 'center', elevation: 4 },
