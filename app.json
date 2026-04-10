@@ -45,6 +45,19 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "40b3f186-4bce-414a-962e-517a371c4277"
+      }
+    },
+    "owner": "eoinoleary04",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/40b3f186-4bce-414a-962e-517a371c4277"
     }
   }
 }
