@@ -1,5 +1,4 @@
 import * as Notifications from 'expo-notifications';
-import { Platform } from 'react-native';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -28,10 +27,10 @@ export async function scheduleDailyReminder(hour: number = 20, minute: number = 
       sound: true,
     },
     trigger: {
+      type: Notifications.SchedulableTriggerInputTypes.DAILY,
       hour,
       minute,
-      repeats: true,
-    } as any,
+    },
   });
   return true;
 }
